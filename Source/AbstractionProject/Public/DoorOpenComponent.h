@@ -20,6 +20,18 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
+	UPROPERTY(EditAnywhere)
+	FRotator DesiredRotation = FRotator :: ZeroRotator;
+
+	FRotator StartRotation = FRotator :: ZeroRotator;
+
+	FRotator FinalRotation = FRotator :: ZeroRotator;
+
+	UPROPERTY(EditAnywhere)
+	float TimeToRotate = 1.0f;
+
+	float CurrentRotationTime = 0.0f;
+
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;

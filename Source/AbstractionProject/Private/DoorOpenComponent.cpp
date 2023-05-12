@@ -3,6 +3,9 @@
 
 #include "DoorOpenComponent.h"
 #include "GameFramework/Actor.h"
+#include "GameFramework/PlayerController.h"
+#include "Engine/TriggerBox.h"
+#include "Engine/World.h"
 
 // Sets default values for this component's properties
 UDoorOpenComponent::UDoorOpenComponent()
@@ -10,7 +13,6 @@ UDoorOpenComponent::UDoorOpenComponent()
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
-
 	// ...
 }
 
@@ -19,10 +21,6 @@ UDoorOpenComponent::UDoorOpenComponent()
 void UDoorOpenComponent::BeginPlay()
 {
 	Super::BeginPlay();
-	//DesiredRotation = FRotator(0.0f, 90.0f, 0.0f);
-	//DeltaRotation = DesiredRotation = GetOwner()->GetActorRotation();
-	//FinalRotation = GetOwner()->GetActorRotation() + DesiredRotation;
-	//GetOwner()->SetActorRotation(DesiredRotation);
 	StartRotation = GetOwner()->GetActorRotation();
 	FinalRotation = GetOwner()->GetActorRotation() + DesiredRotation;
 	// ensure TimeToRotate is greater than EPSILON
@@ -38,10 +36,20 @@ void UDoorOpenComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAc
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 	if (CurrentRotationTime < TimeToRotate)
 	{
-		CurrentRotationTime += DeltaTime;
-		const float RotationAlpha = FMath::Clamp(CurrentRotationTime / TimeToRotate, 0.0f, 1.0f);
-		const FRotator CurrentRotation = FMath::Lerp(StartRotation, FinalRotation, RotationAlpha);
-		GetOwner()->SetActorRotation(CurrentRotation);
+		if (TriggerBox && GetWorld() && GetWorld()->GetFirstLocalPlayerFromController())
+		{
+			APawn* PlayerPawn = GetWorld()->GetFirstPlayerController()->GetPawn();
+			if (PlayerPawn && TriggerBox->IsOverlappingActor(PlayerPawn)) 
+			{
+				CurrentRotationTime += DeltaTime;
+				//const float RotationAlpha = FMath::Clamp(CurrentRotationTime / TimeToRotate, 0.0f, 1.0f);
+				//const FRotator CurrentRotation = FMath::Lerp(StartRotation, FinalRotation, RotationAlpha);
+				const float TimeRatio = FMath::Clamp(CurrentRotationTime / TimeToRotate, 0.0f, 1.0f);
+				const float RotationAlpha = OpenCurve.GetRichCurveConst()->Eval(TimeRatio);
+				const FRotator(CurrentRoation) = FMath::Lerp(StartRotation, FinalRotation, RotationAlpha);
+				GetOwner()->SetActorRotation(CurrentRoation);
+			}
+		}
 	}
 	// ...
 }

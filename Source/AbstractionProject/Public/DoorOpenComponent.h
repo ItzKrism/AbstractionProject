@@ -8,6 +8,16 @@
 #include "DoorOpenComponent.generated.h"
 
 class ATriggerBox;
+class IConsoleVariable;
+
+UENUM()
+enum class EDoorState
+{
+	//Displays a text prompt if the door is closed, open, or locked
+	DS_Closed = 0	UMETA(DisplayName = "Closed"),
+	DS_Open = 1		UMETA(DisplayName = "Open"),
+	DS_Locked = 2	UMETA(DisplayName = "Locked"),
+};
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class ABSTRACTIONPROJECT_API UDoorOpenComponent : public UActorComponent
@@ -17,6 +27,12 @@ class ABSTRACTIONPROJECT_API UDoorOpenComponent : public UActorComponent
 public:	
 	// Sets default values for this component's properties
 	UDoorOpenComponent();
+
+	// Called every frame
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
+	static void OnDebugToggled(IConsoleVariable* Var);
+	void DebugDraw();
 
 protected:
 	// Called when the game starts
@@ -40,9 +56,6 @@ protected:
 	UPROPERTY(EditAnywhere)
 	FRuntimeFloatCurve OpenCurve;
 
-public:	
-	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-
-		
+	UPROPERTY(BlueprintReadOnly)
+	EDoorState DoorState;
 };

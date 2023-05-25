@@ -6,6 +6,7 @@
 #include "GameFramework/PlayerController.h"
 #include "Engine/TriggerBox.h"
 #include "Engine/World.h"
+#include "ObjectiveWorldSystem.h"
 
 
 #include "DrawDebugHelpers.h"
@@ -40,6 +41,11 @@ void UDoorOpenComponent::BeginPlay()
 	FinalRotation = GetOwner()->GetActorRotation() + DesiredRotation;
 	// ensure TimeToRotate is greater than EPSILON
 	CurrentRotationTime = 0.0f;
+	UObjectiveWorldSystem* ObjectiveWorldSystem = GetWorld()->GetSubsystem<UObjectiveWorldSystem>();
+	if(ObjectiveWorldSystem)
+	{
+		OpenedEvent.AddUObject(ObjectiveWorldSystem, &UObjectiveWorldSystem::OnObjectiveCompleted);
+	}
 	// ...
 	
 }
@@ -49,21 +55,34 @@ void UDoorOpenComponent::BeginPlay()
 void UDoorOpenComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-	if (CurrentRotationTime < TimeToRotate)
+
+	if (DoorState == EDoorState::DS_Closed)
 	{
 		if (TriggerBox && GetWorld() && GetWorld()->GetFirstLocalPlayerFromController())
 		{
 			APawn* PlayerPawn = GetWorld()->GetFirstPlayerController()->GetPawn();
 			if (PlayerPawn && TriggerBox->IsOverlappingActor(PlayerPawn)) 
 			{
-				CurrentRotationTime += DeltaTime;
-				//const float RotationAlpha = FMath::Clamp(CurrentRotationTime / TimeToRotate, 0.0f, 1.0f);
-				//const FRotator CurrentRotation = FMath::Lerp(StartRotation, FinalRotation, RotationAlpha);
-				const float TimeRatio = FMath::Clamp(CurrentRotationTime / TimeToRotate, 0.0f, 1.0f);
-				const float RotationAlpha = OpenCurve.GetRichCurveConst()->Eval(TimeRatio);
-				const FRotator(CurrentRoation) = FMath::Lerp(StartRotation, FinalRotation, RotationAlpha);
-				GetOwner()->SetActorRotation(CurrentRoation);
+				DoorState = EDoorState::DS_Open;
+				CurrentRotationTime = 0.0f;
+				GetOwner()->Destroy();
+	
 			}
+		}
+	}
+	else if (DoorState == EDoorState::DS_Open)
+	{
+		CurrentRotationTime += DeltaTime;
+		const float TimeRatio = FMath::Clamp(CurrentRotationTime / TimeToRotate, 0.0f, 1.0f);
+		const float RotationAlpha = OpenCurve.GetRichCurveConst()->Eval(TimeRatio);
+		const FRotator(CurrentRoation) = FMath::Lerp(StartRotation, FinalRotation, RotationAlpha);
+		GetOwner()->SetActorRotation(CurrentRoation);
+		if (TimeRatio >= 1.0f)
+		{
+			DoorState = EDoorState::DS_Open;
+			GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, TEXT("Door Opened"));
+			OpenedEvent.Broadcast();
+			
 		}
 	}
 	// ...

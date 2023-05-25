@@ -31,6 +31,12 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
+	DECLARE_EVENT(FDoorOpenComponent, FOpen)
+		FOpen& OnOpen() { return OpenedEvent; }
+
+	FOpen OpenedEvent;
+
+
 	static void OnDebugToggled(IConsoleVariable* Var);
 	void DebugDraw();
 

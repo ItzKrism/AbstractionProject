@@ -2,21 +2,16 @@
 
 
 #include "AbstractionProjectGameModeBase.h"
-#include "Kismet/GameplayStatics.h"
+#include "ObjectiveWorldSystem.h"
 
 void AAbstractionProjectGameModeBase::StartPlay()
 {
 	Super::StartPlay();
-
-	if(ObjectiveWidget == nullptr)
+	UObjectiveWorldSystem* ObjectiveWorldSystem = GetWorld()->GetSubsystem<UObjectiveWorldSystem>();
+	if (ObjectiveWorldSystem)
 	{
-		APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-		ObjectiveWidget = CreateWidget<UUserWidget>(PlayerController, ObjectiveWidgetClass);
-	}
-
-	if (ObjectiveWidget)
-	{
-		ObjectiveWidget->AddToViewport();
+		ObjectiveWorldSystem->CreateObjectiveWidget(ObjectiveWidgetClass);
+		ObjectiveWorldSystem->DisplayObjectiveWidget();
 	}
 }
 

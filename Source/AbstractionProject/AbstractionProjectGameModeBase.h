@@ -17,7 +17,5 @@ public:
 	void StartPlay() override;
 
 	UPROPERTY(EditDefaultsOnly)
-		TSubclassOf<UUserWidget> ObjectiveWidgetClass;
-
-	UUserWidget* ObjectiveWidget = nullptr;
+	TSubclassOf<UUserWidget> ObjectiveWidgetClass;
 };

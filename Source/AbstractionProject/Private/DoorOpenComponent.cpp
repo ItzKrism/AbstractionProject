@@ -58,13 +58,13 @@ void UDoorOpenComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAc
 			APawn* PlayerPawn = GetWorld()->GetFirstPlayerController()->GetPawn();
 			if (PlayerPawn && TriggerBox->IsOverlappingActor(PlayerPawn)) 
 			{
-				DoorState = EDoorState::DS_Open;
+				DoorState = EDoorState::DS_Opening;
 				CurrentRotationTime = 0.0f;
 	
 			}
 		}
 	}
-	else if (DoorState == EDoorState::DS_Open)
+	else if (DoorState == EDoorState::DS_Opening)
 	{
 		CurrentRotationTime += DeltaTime;
 		const float TimeRatio = FMath::Clamp(CurrentRotationTime / TimeToRotate, 0.0f, 1.0f);
@@ -83,7 +83,13 @@ void UDoorOpenComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAc
 
 void UDoorOpenComponent::OnDoorOpen()
 {
-	
+	DoorState = EDoorState::DS_Open;
+	UObjectiveComponent* ObjectiveComponent = GetOwner()->FindComponentByClass<UObjectiveComponent>();
+	if (ObjectiveComponent)
+	{
+		ObjectiveComponent->SetState(EObjectiveState::OS_Completed);
+	}
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("Door Opened"));
 }
 
 void UDoorOpenComponent::OnDebugToggled(IConsoleVariable* Var)

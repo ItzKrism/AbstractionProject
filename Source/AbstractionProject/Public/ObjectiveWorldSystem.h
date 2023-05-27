@@ -20,7 +20,7 @@ public:
 	void DisplayObjectiveWidget();
 
 	UFUNCTION(BlueprintCallable)
-	FString GetCurrentObjectiveDesctiption();
+	FString GetCurrentObjectiveDescription();
 
 	UFUNCTION(BlueprintCallable)
 	void AddObjective(UObjectiveComponent* ObjectiveComponent);
@@ -28,10 +28,8 @@ public:
 	UFUNCTION(Blueprintcallable)
 	void RemoveObjective(UObjectiveComponent* ObjectiveComponent);
 
-	void ObObjectiveStateChanged(UObjectiveComponent* ObjectiveComponent, EObjectiveState ObjectiveState);
+	void OnObjectiveStateChanged(UObjectiveComponent* ObjectiveComponent, EObjectiveState ObjectiveState);
 
-	UFUNCTION(BlueprintCallable)
-	FString GetCurrentObjectiveDescription() { return TEXT("Open Door"); }
 
 private:
 	UUserWidget* ObjectiveWidget = nullptr;

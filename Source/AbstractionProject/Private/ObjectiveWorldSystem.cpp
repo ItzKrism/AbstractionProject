@@ -42,7 +42,7 @@ void UObjectiveWorldSystem::AddObjective(UObjectiveComponent* ObjectiveComponent
 	Objectives.AddUnique(ObjectiveComponent);
 	if (Objectives.Num() > PrevSize)
 	{
-		ObjectiveComponent->OnStateChanged().AddUObject(this, &UObjectiveWorldSystem::ObObjectiveStateChanged);
+		ObjectiveComponent->OnStateChanged().AddUObject(this, &UObjectiveWorldSystem::OnObjectiveStateChanged);
 	}
 }
 
@@ -51,7 +51,7 @@ void UObjectiveWorldSystem::RemoveObjective(UObjectiveComponent* ObjectiveCompon
 	Objectives.Remove(ObjectiveComponent);
 }
 
-void UObjectiveWorldSystem::OnObjectiveStateChanged(UObjectiveComponent* ObjectiveComponent, EObjectiveState ObjectiveComponent)
+void UObjectiveWorldSystem::OnObjectiveStateChanged(UObjectiveComponent* ObjectiveComponent, EObjectiveState ObjectiveState)
 {
 	DisplayObjectiveWidget();
 }

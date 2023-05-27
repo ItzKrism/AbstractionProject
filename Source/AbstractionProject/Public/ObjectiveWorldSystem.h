@@ -6,6 +6,7 @@
 #include "Subsystems/WorldSubsystem.h"
 #include "GameFramework/GameModeBase.h"
 #include "Blueprint/UserWidget.h"
+#include "ObjectiveComponent.h"
 #include "ObjectiveWorldSystem.generated.h"
 
 
@@ -18,9 +19,25 @@ public:
 	void CreateObjectiveWidget(TSubclassOf<UUserWidget> ObjectiveWidgetClass);
 	void DisplayObjectiveWidget();
 
-	void OnObjectiveCompleted();
+	UFUNCTION(BlueprintCallable)
+	FString GetCurrentObjectiveDesctiption();
+
+	UFUNCTION(BlueprintCallable)
+	void AddObjective(UObjectiveComponent* ObjectiveComponent);
+
+	UFUNCTION(Blueprintcallable)
+	void RemoveObjective(UObjectiveComponent* ObjectiveComponent);
+
+	void ObObjectiveStateChanged(UObjectiveComponent* ObjectiveComponent, EObjectiveState ObjectiveState);
+
+	UFUNCTION(BlueprintCallable)
+	FString GetCurrentObjectiveDescription() { return TEXT("Open Door"); }
 
 private:
 	UUserWidget* ObjectiveWidget = nullptr;
 	
+
+	//add or remove them
+	//sign up for callback on changed
+	TArray<UObjectiveComponent*> Objectives;
 };

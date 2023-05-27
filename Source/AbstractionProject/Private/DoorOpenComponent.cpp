@@ -41,11 +41,6 @@ void UDoorOpenComponent::BeginPlay()
 	FinalRotation = GetOwner()->GetActorRotation() + DesiredRotation;
 	// ensure TimeToRotate is greater than EPSILON
 	CurrentRotationTime = 0.0f;
-	UObjectiveWorldSystem* ObjectiveWorldSystem = GetWorld()->GetSubsystem<UObjectiveWorldSystem>();
-	if(ObjectiveWorldSystem)
-	{
-		OpenedEvent.AddUObject(ObjectiveWorldSystem, &UObjectiveWorldSystem::OnObjectiveCompleted);
-	}
 	// ...
 	
 }
@@ -65,7 +60,6 @@ void UDoorOpenComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAc
 			{
 				DoorState = EDoorState::DS_Open;
 				CurrentRotationTime = 0.0f;
-				GetOwner()->Destroy();
 	
 			}
 		}
@@ -79,15 +73,17 @@ void UDoorOpenComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAc
 		GetOwner()->SetActorRotation(CurrentRoation);
 		if (TimeRatio >= 1.0f)
 		{
-			DoorState = EDoorState::DS_Open;
-			GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, TEXT("Door Opened"));
-			OpenedEvent.Broadcast();
-			
+			OnDoorOpen();
 		}
 	}
 	// ...
 
 	DebugDraw();
+}
+
+void UDoorOpenComponent::OnDoorOpen()
+{
+	
 }
 
 void UDoorOpenComponent::OnDebugToggled(IConsoleVariable* Var)

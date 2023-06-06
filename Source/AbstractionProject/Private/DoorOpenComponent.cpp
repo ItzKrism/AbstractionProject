@@ -26,7 +26,7 @@ UDoorOpenComponent::UDoorOpenComponent()
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
-	DoorState = EDoorState::DS_Closed;
+	DoorState = EDoorState::DS_Locked;
 
 	CVarToggleDebugDoor.AsVariable()->SetOnChangedCallback(FConsoleVariableDelegate::CreateStatic(&UDoorOpenComponent::OnDebugToggled));
 	// ...
@@ -50,8 +50,19 @@ void UDoorOpenComponent::BeginPlay()
 void UDoorOpenComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	if (DoorState == EDoorState::DS_Closed)
+	if (DoorState == EDoorState::DS_Locked)
+	{
+		if (LockedTriggerBox && GetWorld() && GetWorld()->GetFirstLocalPlayerFromController())
+		{
+			APawn* PlayerPawn = GetWorld()->GetFirstPlayerController()->GetPawn();
+			if (PlayerPawn && LockedTriggerBox->IsOverlappingActor(PlayerPawn))
+			{
+				DoorState = EDoorState::DS_Closed;
+				CurrentRotationTime = 0.0f;
+			}
+		}
+	}
+	else if (DoorState == EDoorState::DS_Closed)
 	{
 		if (TriggerBox && GetWorld() && GetWorld()->GetFirstLocalPlayerFromController())
 		{
@@ -60,7 +71,6 @@ void UDoorOpenComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAc
 			{
 				DoorState = EDoorState::DS_Opening;
 				CurrentRotationTime = 0.0f;
-	
 			}
 		}
 	}
@@ -76,10 +86,41 @@ void UDoorOpenComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAc
 			OnDoorOpen();
 		}
 	}
+	else if (DoorState == EDoorState::DS_Open)
+	{
+		if (ClosingTriggerBox && GetWorld() && GetWorld()->GetFirstLocalPlayerFromController())
+		{
+			APawn* PlayerPawn = GetWorld()->GetFirstPlayerController()->GetPawn();
+			if (PlayerPawn && ClosingTriggerBox->IsOverlappingActor(PlayerPawn) == false)
+			{
+				DoorState = EDoorState::DS_Closing;
+				CurrentRotationTime = 0.0f;
+			}
+		}
+	}
+	else if (DoorState == EDoorState::DS_Closing)
+	{
+		CurrentRotationTime += DeltaTime;
+		const float TimeRatio = FMath::Clamp(CurrentRotationTime / TimeToRotate, 0.0f, 1.0f);
+		const float RotationAlpha = OpenCurve.GetRichCurveConst()->Eval(TimeRatio);
+		const FRotator(CurrentRoation) = FMath::Lerp(FinalRotation, StartRotation, RotationAlpha);
+		GetOwner()->SetActorRotation(CurrentRoation);
+		if (TimeRatio >= 1.0f)
+		{
+			OnDoorClose();
+		}
+	}
 	// ...
 
 	DebugDraw();
 }
+
+void UDoorOpenComponent::OnDoorClose()
+{
+	DoorState = EDoorState::DS_Closed;
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("Door Closed"));
+}
+
 
 void UDoorOpenComponent::OnDoorOpen()
 {

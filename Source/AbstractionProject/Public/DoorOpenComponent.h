@@ -17,7 +17,8 @@ enum class EDoorState
 	DS_Closed = 0	UMETA(DisplayName = "Closed"),
 	DS_Opening = 1	UMETA(DisplayName = "Opening"),
 	DS_Open = 2		UMETA(DisplayName = "Open"),
-	DS_Locked = 3	UMETA(DisplayName = "Locked"),
+	DS_Closing = 3	UMETA(DisplayName = "Closing"),
+	DS_Locked = 4	UMETA(DisplayName = "Locked"),
 };
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -38,6 +39,9 @@ public:
 	FOpened OpenedEvent;
 
 	void OnDoorOpen();
+
+	void OnDoorClose();
+
 
 	static void OnDebugToggled(IConsoleVariable* Var);
 	void DebugDraw();
@@ -66,4 +70,10 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly)
 	EDoorState DoorState;
+
+	UPROPERTY(EditAnywhere)
+	ATriggerBox* ClosingTriggerBox;
+
+	UPROPERTY(EditAnywhere)
+	ATriggerBox* LockedTriggerBox;
 };

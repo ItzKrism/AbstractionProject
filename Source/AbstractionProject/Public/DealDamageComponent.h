@@ -23,12 +23,14 @@ public:
 	UFUNCTION()
 	void OnOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
+	UCapsuleComponent* GetTriggerCapsule() const { return TriggerCapsule; }
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
 	UPROPERTY(EditAnywhere)
-	float BaseDamage = 50.0f;
+	float BaseDamage = 0.0f;
 
 	UPROPERTY(EditAnywhere, NoClear)
 	UCapsuleComponent* TriggerCapsule;

@@ -9,6 +9,8 @@
 
 class UDoorOpenComponent;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDoorOpen);
+
 UCLASS()
 class ABSTRACTIONPROJECT_API AInteractableDoor : public AStaticMeshActor
 {
@@ -17,8 +19,16 @@ class ABSTRACTIONPROJECT_API AInteractableDoor : public AStaticMeshActor
 
 public:
 	AInteractableDoor();
+	virtual void BeginPlay() override;
+
+	float InterationTime = 5.0f;
+
+	UPROPERTY(BluePrintAssignable, Category = "Door Interaction")
+	FOnDoorOpen OnDoorOpen;
 
 protected:
+	UFUNCTION()
+	void OnInteractionSuccess();
 	UPROPERTY(EditAnywhere, NoClear)
 	UDoorOpenComponent* DoorInteractionComponent;
 };

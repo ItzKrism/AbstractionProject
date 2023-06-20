@@ -50,6 +50,16 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
+	//binded to interaction imput from player
+	void InteractionStart() override;
+
+	//request to open the door
+	UFUNCTION(BlueprinCallable)
+	void OpenDoor();
+
+	UFUNCTION(BlueprintCallable)
+	bool IsOpen() { return DoorState == EDoorState::DS_Open; }
+
 	UPROPERTY(EditAnywhere)
 	FRotator DesiredRotation = FRotator :: ZeroRotator;
 

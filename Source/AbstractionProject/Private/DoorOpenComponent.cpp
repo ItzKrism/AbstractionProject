@@ -7,9 +7,9 @@
 #include "Engine/TriggerBox.h"
 #include "Engine/World.h"
 #include "ObjectiveWorldSystem.h"
-
-
 #include "DrawDebugHelpers.h"
+#include "InteractionComponent.h"
+
 
 
 using namespace std;
@@ -131,6 +131,8 @@ void UDoorOpenComponent::OnDoorOpen()
 		ObjectiveComponent->SetState(EObjectiveState::OS_Completed);
 	}
 	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("Door Opened"));
+	//tell any listeners that the interaction is successful
+	InteractionSuccess.Broadcast();
 }
 
 void UDoorOpenComponent::OnDebugToggled(IConsoleVariable* Var)
@@ -149,3 +151,22 @@ void UDoorOpenComponent::DebugDraw()
 	}
 }
 
+void UDoorOpenComponent::InteractionStart()
+{
+	Super::InteractionStart();
+	if(InteractingActor)
+	{
+		OpenDoor();
+	}
+}
+
+void UDoorOpenComponent::OpenDoor()
+{
+	if(IsOpen() || DoorState == EDoorState::DS_Opening)
+	{
+		return;
+	}
+
+	DoorState = EDoorState::DS_Opening;
+	CurrentRotationTime = 0.0f;
+}

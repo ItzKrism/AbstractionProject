@@ -29,6 +29,16 @@ void AAbstractionPlayerCharacter::Tick(float DeltaTime)
 
 }
 
+void AAbstractionPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+{
+	Super::SetupPlayerInputComponent(PlayerInputComponent);
+	FInputActionBinding* Binding;
+	//these functions fire off events
+	//interaction component listens to them
+	Binding = &PlayerInputComponent->BindAction(FName("InteractionStart"), IE_Pressed, this, &AAbstractionPlayerCharacter::StartInteraction);
+	Binding = &PlayerInputComponent->BindAction(FName("InteractionCancel"), IE_Pressed, this, &AAbstractionPlayerCharacter::StopInteraction);
+}
+
 // Called to bind functionality to input
 void AAbstractionPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
@@ -63,5 +73,17 @@ void AAbstractionPlayerCharacter::OnDeath(bool IsFellOut)
 	{
 		PlayerController->RestartLevel();
 	}
+
+	void AAbstractionPlayerCharacter::StartInteraction()
+	{
+		OnInteractionStart.Broadcast();
+	}
+
+	void AAbstractionPlayerCharacter::StopInteraction()
+	{
+		OnInteractionCancel.Broadcast();
+	}
+
+
 }
 

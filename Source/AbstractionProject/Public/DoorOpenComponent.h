@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "Curves/CurveFloat.h"
+#include "InteractionComponent.h"
 #include "DoorOpenComponent.generated.h"
 
 class ATriggerBox;
@@ -22,7 +23,7 @@ enum class EDoorState
 };
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class ABSTRACTIONPROJECT_API UDoorOpenComponent : public UActorComponent
+class ABSTRACTIONPROJECT_API UDoorOpenComponent : public UInteractionComponent
 {
 	GENERATED_BODY()
 
@@ -54,7 +55,7 @@ protected:
 	void InteractionStart() override;
 
 	//request to open the door
-	UFUNCTION(BlueprinCallable)
+	UFUNCTION(BlueprintCallable)
 	void OpenDoor();
 
 	UFUNCTION(BlueprintCallable)

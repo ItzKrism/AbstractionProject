@@ -12,16 +12,15 @@ AInteractableDoor::AInteractableDoor() : Super()
 	{
 		DoorInteractionComponent->GetTriggerCapsule()->SetupAttachment(RootComponent);
 	}
-
-	void AInteractableDoor::BeginPlay()
-	{
-		Super::BeginPlay();
-		DoorInteractionComponent->InteractionSuccess.AddDynamic(this, &AInteractableDoor::OnInteractionSuccess);
-	}
-
-	void AInteractableDoor::OnInteractionSuccess()
-	{
-		OnDoorOpen.Broadcast();
-	}
 }
 
+void AInteractableDoor::BeginPlay()
+{
+	Super::BeginPlay();
+	DoorInteractionComponent->InteractionSuccess.AddDynamic(this, &AInteractableDoor::OnInteractionSuccess);
+}
+
+void AInteractableDoor::OnInteractionSuccess()
+{
+	OnDoorOpen.Broadcast();
+}

@@ -24,7 +24,7 @@ void UInteractionComponent::BeginPlay()
 	if (Player)
 	{
 		//bind to player input
-		Player->OnInteractionStart.AddUObject(this, &UInteractionComponent::InterationStart);
+		Player->OnInteractionStart.AddUObject(this, &UInteractionComponent::InteractionStart);
 	}
 	// ...
 	
@@ -43,7 +43,7 @@ void UInteractionComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 //Begin play bind
 //End play bind
 //Broadcast
-void UInteractionComponent::InterationStart()
+void UInteractionComponent::InteractionStart()
 {
 	
 }

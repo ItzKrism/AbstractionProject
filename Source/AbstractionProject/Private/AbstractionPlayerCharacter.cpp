@@ -39,13 +39,6 @@ void AAbstractionPlayerCharacter::SetupPlayerInputComponent(UInputComponent* Pla
 	Binding = &PlayerInputComponent->BindAction(FName("InteractionCancel"), IE_Pressed, this, &AAbstractionPlayerCharacter::StopInteraction);
 }
 
-// Called to bind functionality to input
-void AAbstractionPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
-}
-
 void AAbstractionPlayerCharacter::FellOutOfWorld(const UDamageType& dmgType)
 {
 	OnDeath(true);
@@ -73,17 +66,15 @@ void AAbstractionPlayerCharacter::OnDeath(bool IsFellOut)
 	{
 		PlayerController->RestartLevel();
 	}
+}
 
-	void AAbstractionPlayerCharacter::StartInteraction()
-	{
-		OnInteractionStart.Broadcast();
-	}
+void AAbstractionPlayerCharacter::StartInteraction()
+{
+	OnInteractionStart.Broadcast();
+}
 
-	void AAbstractionPlayerCharacter::StopInteraction()
-	{
-		OnInteractionCancel.Broadcast();
-	}
-
-
+void AAbstractionPlayerCharacter::StopInteraction()
+{
+	OnInteractionCancel.Broadcast();
 }
 

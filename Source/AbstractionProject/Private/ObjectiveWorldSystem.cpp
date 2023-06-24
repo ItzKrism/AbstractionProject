@@ -3,6 +3,9 @@
 
 #include "ObjectiveWorldSystem.h"
 #include "Kismet/GameplayStatics.h"
+#include "../AbstractionProjectGameModeBase.h"
+#include "Blueprint/UserWidget.h"
+#include "ObjectivesHuds.h"
 
 void UObjectiveWorldSystem::CreateObjectiveWidget(TSubclassOf<UUserWidget> ObjectiveWidgetClass)
 {
@@ -12,6 +15,7 @@ void UObjectiveWorldSystem::CreateObjectiveWidget(TSubclassOf<UUserWidget> Objec
 		ObjectiveWidget = CreateWidget<UUserWidget>(PlayerController, ObjectiveWidgetClass);
 	}
 }
+
 
 void UObjectiveWorldSystem::DisplayObjectiveWidget()
 {

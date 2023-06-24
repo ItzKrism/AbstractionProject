@@ -23,6 +23,7 @@ void UObjectiveComponent::SetState(EObjectiveState NewState)
 	}
 }
 
+
 // Called when the game starts
 void UObjectiveComponent::BeginPlay()
 {

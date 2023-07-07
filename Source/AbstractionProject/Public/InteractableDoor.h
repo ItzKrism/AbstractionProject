@@ -21,9 +21,9 @@ public:
 	AInteractableDoor();
 	virtual void BeginPlay() override;
 
-	float InterationTime = 5.0f;
+	float InteractionTime = 5.0f;
 
-	UPROPERTY(BluePrintAssignable, Category = "Door Interaction")
+	UPROPERTY(BlueprintAssignable, Category = "Door Interaction")
 	FOnDoorOpen OnDoorOpen;
 
 protected:

@@ -37,6 +37,8 @@ protected:
 	void StartInteraction();
 	void StopInteraction();
 
+	APlayerController* PC;
+
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -50,8 +52,21 @@ public:
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser);
 
 	UFUNCTION(BlueprintCallable)
+	virtual float GiveHealth(float HealthAmoun);
+
+	UFUNCTION(BlueprintCallable)
 	const bool IsAlive() const;
 
 	UFUNCTION(BlueprintCallable)
 	const float	GetCurrentHealth() const;
+
+	UFUNCTION(BlueprintCallable)
+	void HandleItemCollected();
+
+	UFUNCTION(BluePrintImplementableEvent)
+	void ItemCollected();
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	int ItemsCollected = 0;
+
 };

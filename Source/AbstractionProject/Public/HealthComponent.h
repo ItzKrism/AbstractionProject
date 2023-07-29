@@ -17,6 +17,7 @@ public:
 	UHealthComponent();
 
 	void TakeDamage(float Damage) { CurrentHealth -= Damage; }
+	void GiveHealth(float Heal) { CurrentHealth += Heal; }
 	bool IsDead() { return CurrentHealth <= FLT_EPSILON; }
 	const float GetCurrentHealth() const { return CurrentHealth; }
 
@@ -28,5 +29,4 @@ protected:
 	float MaxHealth = 100.0f;
 
 	float CurrentHealth = 0.0f;
-		
 };

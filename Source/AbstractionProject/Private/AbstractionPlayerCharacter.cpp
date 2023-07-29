@@ -19,7 +19,8 @@ AAbstractionPlayerCharacter::AAbstractionPlayerCharacter()
 void AAbstractionPlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	PC = GetWorld()->GetFirstPlayerController();
 }
 
 // Called every frame
@@ -59,6 +60,15 @@ float AAbstractionPlayerCharacter::TakeDamage(float DamageAmount, FDamageEvent c
 	return Damage;
 }
 
+float AAbstractionPlayerCharacter::GiveHealth(float HealAmount)
+{
+	if (HealthComponent)
+	{
+		HealthComponent->GiveHealth(HealAmount);
+	}
+	return HealAmount;
+}
+
 const bool AAbstractionPlayerCharacter::IsAlive() const
 {
 	if (HealthComponent)
@@ -96,3 +106,10 @@ void AAbstractionPlayerCharacter::StopInteraction()
 	OnInteractionCancel.Broadcast();
 }
 
+void AAbstractionPlayerCharacter::HandleItemCollected()
+{
+	ItemsCollected++;
+	// Play Effects here
+
+	ItemCollected();
+}
